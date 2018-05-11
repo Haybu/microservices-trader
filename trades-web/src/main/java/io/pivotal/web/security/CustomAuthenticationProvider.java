@@ -1,7 +1,7 @@
 package io.pivotal.web.security;
 
 import io.pivotal.web.domain.AuthenticationRequest;
-import io.pivotal.web.service.UserService;
+import io.pivotal.web.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,18 +10,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 	@Autowired
-	private UserService service;
+	private AccountService service;
 
 	@Override
 	public Authentication authenticate(Authentication authentication)

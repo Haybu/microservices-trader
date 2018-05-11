@@ -6,12 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Account {
 
 	@JsonProperty("id")
-	private Integer id;
+	private String id;
 
 	@JsonProperty("address")
     private String address;
@@ -54,11 +55,11 @@ public class Account {
 	@JsonProperty("logincount")
 	private Integer logincount;
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -181,5 +182,15 @@ public class Account {
 				.append(", lastlogin=").append(lastlogin)
 				.append(", logincount=").append(logincount).append("]");
 		return builder.toString();
+	}
+
+	public Account() {}
+
+	public Account(Map map) {
+		this.setUserid((String)map.get("sub"));
+		this.setFullname((String)map.get("given_name") + " " + (String)map.get("family_name"));
+		this.setId((String)map.get("id"));
+		this.setCreationdate(new Date(Long.valueOf((Integer)map.get("updated_at"))));
+		this.setEmail((String)map.get("email"));
 	}
 }

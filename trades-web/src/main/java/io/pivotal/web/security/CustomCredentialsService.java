@@ -1,27 +1,14 @@
 package io.pivotal.web.security;
 
-import io.pivotal.web.domain.Account;
-import io.pivotal.web.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+//@Component
+public class CustomCredentialsService { //implements UserDetailsService {
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-@Component
-public class CustomCredentialsService implements UserDetailsService {
+	/**
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomCredentialsService.class);
 	
 	@Autowired
-	private UserService accountservice;
+	private AccountService accountservice;
 			
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -91,5 +78,6 @@ public class CustomCredentialsService implements UserDetailsService {
 		}
 		
 	}
+*/
 
 }

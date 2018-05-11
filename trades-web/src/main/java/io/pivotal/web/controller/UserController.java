@@ -2,15 +2,14 @@ package io.pivotal.web.controller;
 
 import io.pivotal.web.domain.Account;
 import io.pivotal.web.domain.AuthenticationRequest;
+import io.pivotal.web.service.AccountService;
 import io.pivotal.web.service.MarketService;
 import io.pivotal.web.service.MarketSummaryService;
-import io.pivotal.web.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,7 +30,7 @@ public class UserController {
 			.getLogger(UserController.class);
 	
 	@Autowired
-	private UserService accountService;
+	private AccountService accountService;
 		
 	@Autowired
 	private MarketService marketService;
@@ -40,15 +39,15 @@ public class UserController {
 	private MarketSummaryService summaryService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String showHome(Model model) {
+	public String showHome(Model model, OAuth2AuthenticationToken authentication) {
 		if (!model.containsAttribute("login")) {
 			model.addAttribute("login", new AuthenticationRequest());
 		}
 		model.addAttribute("marketSummary", summaryService.getMarketSummary());
 		
 		//check if user is logged in!
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+		//Authentication authentication2 = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication.isAuthenticated()) {
 		    String currentUserName = authentication.getName();
 		    logger.debug("User logged in: " + currentUserName);
 		    
@@ -57,7 +56,7 @@ public class UserController {
 		    } catch (HttpServerErrorException e) {
 		    	model.addAttribute("portfolioRetrievalError",e.getMessage());
 		    }
-		    model.addAttribute("account",accountService.getAccount(currentUserName));
+		    model.addAttribute("account",accountService.getAccount(authentication));
 		}
 		
 		return "index";
@@ -81,14 +80,14 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String getLogin(Model model, @ModelAttribute(value="login") AuthenticationRequest login) {
 		logger.info("Logging in GET, user: " + login.getUsername());
-		return showHome(model);
+		return showHome(model, null);
 	}
 
 	@RequestMapping(value="/logout", method = RequestMethod.POST)
 	public String postLogout(Model model, @ModelAttribute(value="login") AuthenticationRequest login) {
 		logger.info("Logout, user: " + login.getUsername());
 		logger.info(model.asMap().toString());
-		return showHome(model);
+		return showHome(model, null);
 	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
