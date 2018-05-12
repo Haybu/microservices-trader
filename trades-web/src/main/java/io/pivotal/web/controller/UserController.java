@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,7 +39,7 @@ public class UserController {
 	private MarketSummaryService summaryService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String showHome(Model model, OAuth2AuthenticationToken authentication) {
+	public String showHome(Model model, OAuth2Authentication authentication) {
 		if (!model.containsAttribute("login")) {
 			model.addAttribute("login", new AuthenticationRequest());
 		}
@@ -56,7 +56,7 @@ public class UserController {
 		    } catch (HttpServerErrorException e) {
 		    	model.addAttribute("portfolioRetrievalError",e.getMessage());
 		    }
-		    model.addAttribute("account",accountService.getAccount(authentication));
+		    model.addAttribute("account",accountService.getAccount());
 		}
 		
 		return "index";

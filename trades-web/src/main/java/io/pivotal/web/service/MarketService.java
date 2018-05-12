@@ -10,12 +10,11 @@ import io.pivotal.web.exception.OrderNotSavedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -25,18 +24,12 @@ public class MarketService {
 	private static final Logger logger = LoggerFactory.getLogger(MarketService.class);
 
 	@Autowired
-	private RestTemplate restTemplate;
-
-    @Value("${pivotal.quotesService.name}")
-	private String quotesService;
-	
-    @Value("${pivotal.portfolioService.name}")
-	private String portfolioService;
+	private OAuth2RestTemplate restTemplate;
 
 	@HystrixCommand(fallbackMethod = "getCompaniesFallback")
 	public List<CompanyInfo> getCompanies(String name) {
 		logger.debug("Fetching companies with name or symbol matching: " + name);
-		CompanyInfo[] infos = restTemplate.getForObject("http://" + quotesService + "/company/{name}", CompanyInfo[].class, name);
+		CompanyInfo[] infos = restTemplate.getForObject("http://quotes-service/company/{name}", CompanyInfo[].class, name);
 		return Arrays.asList(infos);
 	}
 
@@ -55,7 +48,7 @@ public class MarketService {
             commandProperties = {@HystrixProperty(name="execution.timeout.enabled", value="false")})
 	public List<Quote> getQuotes(String symbols) {
 		logger.debug("retrieving multiple quotes: " + symbols);
-		Quote[] quotesArr = restTemplate.getForObject("http://" + quotesService + "/quotes?q={symbols}", Quote[].class, symbols);
+		Quote[] quotesArr = restTemplate.getForObject("http://quotes-service/quotes?q={symbols}", Quote[].class, symbols);
 		List<Quote> quotes = Arrays.asList(quotesArr);
 		logger.debug("Received quotes: {}",quotes);
 		return quotes;
@@ -98,7 +91,7 @@ public class MarketService {
 		
 		//check result of http request to ensure its ok.
 		
-		ResponseEntity<Order> result = restTemplate.postForEntity("http://" + portfolioService + "/portfolio/{accountId}", order, Order.class, order.getAccountId());
+		ResponseEntity<Order> result = restTemplate.postForEntity("http://portfolio-service/portfolio/{accountId}", order, Order.class, order.getAccountId());
 		if (result.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
 			throw new OrderNotSavedException("Could not save the order");
 		}
@@ -108,7 +101,7 @@ public class MarketService {
 	
 	@HystrixCommand(fallbackMethod = "getPortfolioFallback")
 	public Portfolio getPortfolio(String accountId) {
-		Portfolio folio = restTemplate.getForObject("http://" + portfolioService + "/portfolio/{accountid}", Portfolio.class, accountId);
+		Portfolio folio = restTemplate.getForObject("http://portfolio-service/portfolio/{accountid}", Portfolio.class, accountId);
 		logger.debug("Portfolio received: " + folio);
 		return folio;
 	}

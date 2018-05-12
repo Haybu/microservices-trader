@@ -40,15 +40,15 @@ public class AccountService {
 
 		logger.debug("AccountService.findAccount: id=" + id);
 
-		Optional<Account> account = accounts.findById(id);
-		if (account == null || !account.isPresent()) {
+		Account account = accounts.findOne(id);
+		if (account == null) {
 			logger.warn("AccountService.findAccount: could not find account with id: " + id);
 			throw new NoRecordsFoundException();
 		}
 
 		logger.info(String.format("AccountService.findAccount - retrieved account with id: %s. Payload is: %s", id, account));
 
-		return account.get();
+		return account;
 	}
 
 	/**
