@@ -8,7 +8,6 @@ import io.pivotal.web.service.MarketSummaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Map;
 
 @Controller
 public class UserController {
@@ -49,7 +47,7 @@ public class UserController {
 		//Authentication authentication2 = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication.isAuthenticated()) {
 		    String currentUserName = authentication.getName();
-		    logger.debug("User logged in: " + currentUserName);
+		    logger.debug(">> User logged in: " + currentUserName);
 		    
 		    try {
 		    	model.addAttribute("portfolio",marketService.getPortfolio(currentUserName));
@@ -57,11 +55,14 @@ public class UserController {
 		    	model.addAttribute("portfolioRetrievalError",e.getMessage());
 		    }
 		    model.addAttribute("account",accountService.getAccount(authentication));
+		} else {
+			logger.debug(">> User does NOT logged in!!");
 		}
 		
 		return "index";
 	}
-	
+
+	/**
 	//TODO: never gets called?
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	//@RequestMapping(value = "/login")
@@ -82,6 +83,7 @@ public class UserController {
 		logger.info("Logging in GET, user: " + login.getUsername());
 		return showHome(model, null);
 	}
+	 */
 
 	@RequestMapping(value="/logout", method = RequestMethod.POST)
 	public String postLogout(Model model, @ModelAttribute(value="login") AuthenticationRequest login) {

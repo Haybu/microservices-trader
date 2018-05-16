@@ -66,6 +66,7 @@
             <version>${spring-security-version}</version>
         </dependency>
 
+        <!-- cloud commons -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
