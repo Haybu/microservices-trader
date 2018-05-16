@@ -22,6 +22,7 @@
         <spring-boot.version>2.0.1.RELEASE</spring-boot.version>
         <spring-cloud.version>Finchley.RC1</spring-cloud.version>
         <spring-cloud-services.version>1.6.0.RELEASE</spring-cloud-services.version>
+        <spring-security-version>5.1.0.BUILD-SNAPSHOT</spring-security-version>
     </properties>
 
 
