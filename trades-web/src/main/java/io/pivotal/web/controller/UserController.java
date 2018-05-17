@@ -56,7 +56,7 @@ public class UserController {
 		    }
 		    model.addAttribute("account",accountService.getAccount(authentication));
 		} else {
-			logger.debug(">> User does NOT logged in!!");
+			logger.debug(">> User does NOT log in!!");
 		}
 		
 		return "index";
