@@ -1,0 +1,14 @@
+== Microservices Trader Application
+
+This application is a Maven-ized replica of the open sourced https://github.com/pivotal-bank/cf-SpringBootTrader[trader application].
+
+This version of the application leverages OAuth2 security feature. It authenticates and authorizes a user using Okta.
+
+Service's configurations are sourced from a config server backed by properties files reside in
+https://github.com/Haybu/cf-SpringBootTrader-config[github].
+
+On this application repo, there are two branches. one to support legacy OAuth2 and another to demonstrate
+next generation OAuth2 Client authentication in Spring 5. Each branch is supported by a corresponding config
+repository branch.
+
+WARNING: This repo is for illustration only and does not represent a reference architecture.
